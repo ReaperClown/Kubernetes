@@ -1,0 +1,48 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: mysql-backup-example
+  namespace: mysql
+spec:
+#Cron Time is set according to server time, ensure server time zone and set accordingly.
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  schedule: "*/20 * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccount: cronjob-keycloak-mysql-service-account
+          containers:
+          - name: kubectl
+            image: willianmesquita/sainfohall:1.0
+            command: ["/bin/bash"]
+            env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: backup-cronjob-secret
+                  key: awsId
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: backup-cronjob-secret
+                  key: awsSecretKey
+            - name: AWS_DEFAULT_REGION
+              value: sa-east-1
+            args:
+            - -c
+            - >-
+                date1=$(date +%Y%m%d) &&
+                pgpass="@Aws-Backup#201" &&
+                kubectl version &&
+                kubectl exec mysql-prod-77c5b64494-zkt59 -n mysql -- mysqldump -u'backup' -p$pgpass --all-databases > "$date1"-backup.sql &&
+                cat "$date1"-backup.sql &&
+                echo "Successful Backup of Database" &&
+                aws --version &&
+                aws s3 ls &&
+                aws s3 cp "$date1"-backup.sql s3://ihwsbackup/
+            imagePullPolicy: IfNotPresent
+          restartPolicy: OnFailure
+      backoffLimit: 3

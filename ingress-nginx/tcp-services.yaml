@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tcp-services
+  namespace: ingress-nginx
+data:
+  3306: "default/mysql-dev-service:3306"
+  3000: "default/rocketchat-server:3000"

@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  name: rocketchat-ingress
+  namespace: rocketmongo
+spec:
+  rules:
+  - host: rocket-chat.infohall.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: rocketchat-server
+            port:
+              number: 3000

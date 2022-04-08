@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  name: whatsapp-ingress
+  namespace: whatsapp
+spec:
+  rules:
+  - host: wabusiness.infohall.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: whatsapp-web-service
+            port:
+              number: 443

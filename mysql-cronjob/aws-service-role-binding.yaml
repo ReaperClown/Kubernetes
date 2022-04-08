@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: mysql-cronjob-role-binding
+  namespace: mysql
+subjects:
+- kind: ServiceAccount
+  name: cronjob-keycloak-mysql-service-account
+  namespace: mysql
+roleRef:
+  kind: Role
+  name: get-pods
+  apiGroup: rbac.authorization.k8s.io

@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rocketmongo
+  labels:
+    app.kubernetes.io/name: rocketmongo
+    app.kubernetes.io/instance: rocketmongo
+

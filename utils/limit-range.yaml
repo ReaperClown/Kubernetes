@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cpu-limit-range
+  namespace: rocketmongo
+spec:
+  limits:
+  - default:
+      memory: 56Mi
+      cpu: 0.15
+    defaultRequest:
+      cpu: 0.15
+      memory: 56Mi
+    type: Container
